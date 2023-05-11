@@ -1,24 +1,35 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { lazy, useCallback } from 'react';
 import './App.css';
+import { HashRouter, Link, Navigate, Route, Routes } from 'react-router-dom';
+import Home from './page/Home/index'
+import FromComponent from './page/From/index'
+import { KeepAliveProvider, withKeepAlive } from "./keepAlive";
 
+const From1 = withKeepAlive(FromComponent, { keepAliveId: "From" })
+const Home1 = withKeepAlive(Home, { keepAliveId: "Home" })
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <KeepAliveProvider>
+        <HashRouter>
+          <ul>
+            <li>
+              <Link to={'/'}>主页</Link>
+            </li>
+            <li>
+              <Link to={'/from'}>from</Link>
+            </li>
+          </ul>
+          <ul>
+            <Routes>
+              <Route path='/' element={<Home1 />}></Route>
+              <Route path='/from' element={<From1 />}></Route>
+              <Route path='*' element={<Navigate to="/" />}></Route>
+            </Routes>
+          </ul>
+
+        </HashRouter>
+      </KeepAliveProvider>
     </div>
   );
 }
